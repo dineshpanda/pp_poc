@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgis
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: platform_property
+
+test:
+  <<: *default
+  database: platform_property_test
+
+production:
+  <<: *default
+  database: platform_property_production
+  username: platform_property
+  password: <%= ENV['PLATFORM_PROPERTY_DATABASE_PASSWORD'] %>
