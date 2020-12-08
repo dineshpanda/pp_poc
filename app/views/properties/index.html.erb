@@ -1,0 +1,49 @@
+<div id="app" style="width: 800px; height: 600px;"></div>
+<ul id="locations"></ul>
+
+<% provide :head_tags do %>
+  <script>
+   document.addEventListener("DOMContentLoaded", function(){
+       initMapWithMarkers(<%= @properties.map { |prop| [prop.lonlat.y, prop.lonlat.x]} %>)
+   });
+  </script>
+<% end %>
+
+<script>
+ function initMapWithMarkers(properties_latlon) {
+     let myCoords = new google.maps.LatLng(37.4737351, -120.7884055);
+     let mapOptions = {
+         center: myCoords,
+         zoom: 5
+     };
+
+     let map = new google.maps.Map(
+         document.getElementById('app'),
+         mapOptions
+     );
+
+     let markerCoords;
+     for(let i = 0; i < properties_latlon.length; i++) {
+         markerCoords = new google.maps.LatLng(properties_latlon[i][0], properties_latlon[i][1]);
+         var marker = new google.maps.Marker({
+             position: markerCoords,
+             map: map
+         });
+     }
+
+     map.addListener("bounds_changed", () => {
+         const mapCoords = [
+             [map.getBounds().getSouthWest().lng(), map.getBounds().getNorthEast().lat()],
+             [map.getBounds().getNorthEast().lng(), map.getBounds().getNorthEast().lat()],
+             [map.getBounds().getNorthEast().lng(), map.getBounds().getSouthWest().lat()],
+             [map.getBounds().getSouthWest().lng(), map.getBounds().getSouthWest().lat()]
+         ]
+         fetchProperties(
+             JSON.stringify(mapCoords)
+         ).then(response => {
+             response_html = response.map(res => "<li>" + res.address +"</li>").join("");
+             document.getElementById("locations").innerHTML = response_html;
+         });
+     });
+ }
+</script>
