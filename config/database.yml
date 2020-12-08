@@ -13,6 +13,4 @@ test:
 
 production:
   <<: *default
-  database: platform_property_production
-  username: platform_property
-  password: <%= ENV['PLATFORM_PROPERTY_DATABASE_PASSWORD'] %>
+  url: <%= ENV.fetch('DATABASE_URL', '').sub(/^postgres/, "postgis") %>
