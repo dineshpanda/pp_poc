@@ -38,7 +38,7 @@ class PropertiesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @properties }
+      format.json { render "index.json" }
     end
   end
 
